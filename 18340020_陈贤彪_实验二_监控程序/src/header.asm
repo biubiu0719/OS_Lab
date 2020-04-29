@@ -14,9 +14,11 @@ offset_program4 equ 0AF00h
     mov	es, ax       ; 置ES=DS
     mov	cx, %2       ; CX = 串长（=9）
     mov	ax, 1301h    ; AH = 13h（功能号）、AL = 01h（光标置于串尾）
-    mov	bx, 0007h    ; 页号为0(BH = 0) 黑底白字(BL = 07h)
+    mov	bx, 0009h    ; 页号为0(BH = 0) 黑底白字(BL = 07h)
     mov dh, %3       ; 行号=0
     mov	dl, %4       ; 列号=0
     int	10h          ; BIOS的10h功能：显示一行字符
     popa             ; 恢复现场
 %endmacro
+
+

@@ -1,21 +1,21 @@
 
-; 参数：(-1, 11, 40, 25, 0, 19)
+; 参数：(39, -1, 80, 13, 40, 7)
 %include "header.asm"
-org offset_program3
+org offset_program2
 
     Dn_Rt equ 1            ; D-Down,U-Up,R-right,L-Left
     Up_Rt equ 2
     Up_Lt equ 3
     Dn_Lt equ 4
     delay equ 50000        ; 计时器延迟计数,用于控制画框的速度
-    ddelay equ 580         ; 计时器延迟计数,用于控制画框的速度
+    ddelay equ 500         ; 计时器延迟计数,用于控制画框的速度
 
-    screen_left equ -1     ; 字符运动左边界
-    screen_top equ 11      ; 字符运动上边界
-    screen_right equ 40    ; 字符运动右边界
-    screen_bottom equ 25   ; 字符运动下边界
-    originpos_y equ 0      ; 起点列数
-    originpos_x equ 19      ; 起点行数
+    screen_left equ 39     ; 字符运动左边界
+    screen_top equ -1      ; 字符运动上边界
+    screen_right equ 80    ; 字符运动右边界
+    screen_bottom equ 13   ; 字符运动下边界
+    originpos_y equ 40      ; 起点列数
+    originpos_x equ 7      ; 起点行数
 
 start:
     call ClearScreen       ; 清屏
@@ -25,11 +25,11 @@ start:
     mov es,ax              ; ES = CS
     mov ax,0B800h
     mov gs,ax              ; GS = B800h，指向文本模式的显示缓冲区
-    mov byte[char],'X'
+    mov byte[char],'#'
 
-    PRINT_IN_POS hint1, hint1len, 3, 30
+    PRINT_IN_POS hint1, hint1len, 16, 0
 
-initialize:                ; 多次调用用户程序时，可保证初始值是相同的
+initialize:                ; 初始化
     mov word[x], originpos_x
     mov word[y], originpos_y
     mov byte[curcolor], 80h
@@ -210,8 +210,7 @@ DataArea:
     curcolor db 80h        ; 保存当前字符颜色属性，用于myinfo
     curcolor2 db 01h       ; 保存当前字符颜色属性，用于移动的字符
 
-    hint1 db 'User program 3 is running. Press ESC to exit.'
+    hint1 db 'User program 2 is running. Press ESC to exit.'
     hint1len equ ($-hint1)
 
-    times 1022-($-$$) db 0 ; 填充0，一直到第1022字节
-    db 55h, 0AAh           ; 扇区末尾两个字节为0x55和0xAA
+    times 1024-($-$$) db 0 ; 填充0，一直到第1022字节

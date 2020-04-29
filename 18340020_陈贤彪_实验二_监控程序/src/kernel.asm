@@ -3,7 +3,7 @@ org 0A100h
 
 start:
     call ClearScreen ; 清屏
-    PRINT_IN_POS str_title, titlelen, 5, 35
+    PRINT_IN_POS str_title, titlelen, 5, 37
     PRINT_IN_POS str_subtitle, subtitlelen, 6, 29
     PRINT_IN_POS str_date, datelen, 8, 35
     PRINT_IN_POS str_hint1, hint1len, 15, 10
@@ -29,7 +29,7 @@ ClearScreen:         ; 函数：清屏
     ret
 
 DataArea:
-    str_title db 'JedOS V1.0'
+    str_title db 'MYOS'
     titlelen equ ($-str_title)
 
     str_subtitle db 'Chen Xianbiao, 18340020'
@@ -42,5 +42,4 @@ DataArea:
     hint1len equ ($-str_hint1)
 
 SectorEnding:
-    times 510-($-$$) db 0
-    db 0x55,0xaa
+    times 512-($-$$) db 0
