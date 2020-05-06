@@ -1,7 +1,27 @@
-; 参数：(39, 11, 80, 25, 40 19)
-%include "header.asm"
-org offset_program4
 
+; 参数：(39, -1, 80, 13, 40, 7)
+offset_booter equ 7C00h       ;512字节为00200h
+offset_program1 equ 8100h      ;+00200h
+offset_program2 equ 8100h      ;+00400h
+offset_program3 equ 8100h      ;+00400h
+offset_program4 equ 8100h      ;+00400h
+%macro PRINT 4
+    pusha            ; 保护现场
+    mov	ax, cs       ; 置其他段寄存器值与CS相同
+    mov	ds, ax       ; 数据段
+    mov	bp, %1       ; BP=当前串的偏移地址
+    mov	ax, ds       ; ES:BP = 串地址
+    mov	es, ax       ; 置ES=DS
+    mov	cx, %2       ; CX = 串长（=9）
+    mov	ax, 1301h    ; AH = 13h（功能号）、AL = 01h（光标置于串尾）
+    mov	bx, 0009h    ; 页号为0(BH = 0) 黑底白字(BL = 07h)
+    mov dh, %3       ; 行号=0
+    mov	dl, %4       ; 列号=0
+    int	10h          ; BIOS的10h功能：显示一行字符
+    popa             ; 恢复现场
+%endmacro
+;org offset_program2
+org 100h
     Dn_Rt equ 1            ; D-Down,U-Up,R-right,L-Left
     Up_Rt equ 2
     Up_Lt equ 3
@@ -10,11 +30,11 @@ org offset_program4
     ddelay equ 500         ; 计时器延迟计数,用于控制画框的速度
 
     screen_left equ 39     ; 字符运动左边界
-    screen_top equ 11      ; 字符运动上边界
+    screen_top equ -1      ; 字符运动上边界
     screen_right equ 80    ; 字符运动右边界
-    screen_bottom equ 25   ; 字符运动下边界
+    screen_bottom equ 13   ; 字符运动下边界
     originpos_y equ 40      ; 起点列数
-    originpos_x equ 19      ; 起点行数
+    originpos_x equ 7      ; 起点行数
 
 start:
     call ClearScreen       ; 清屏
@@ -24,9 +44,9 @@ start:
     mov es,ax              ; ES = CS
     mov ax,0B800h
     mov gs,ax              ; GS = B800h，指向文本模式的显示缓冲区
-    mov byte[char],'$'
+    mov byte[char],'#'
 
-    PRINT_IN_POS hint1, hint1len, 2, 1
+    PRINT hint1, hint1len, 16, 0
 
 initialize:                ; 初始化
     mov word[x], originpos_x
@@ -186,7 +206,8 @@ end:
     jmp $                  ; 停止画框，无限循环
 
 QuitUsrProg:
-    jmp 0A100h             ; 退出用户程序
+   ;jmp offset_booter             ; 退出用户程序
+   retf
 
 ClearScreen:               ; 函数：清屏
     pusha
@@ -204,12 +225,11 @@ DataArea:
     x dw originpos_x
     y dw originpos_y
 
-    myinfo db '                             Chen Xianbiao, 18340020                            '
-    infolen dw $-myinfo    ; myinfo字符串的长度
+
     curcolor db 80h        ; 保存当前字符颜色属性，用于myinfo
     curcolor2 db 01h       ; 保存当前字符颜色属性，用于移动的字符
 
-    hint1 db 'User program 4 is running. Press ESC to exit.'
+    hint1 db 'Press ESC to exit.'
     hint1len equ ($-hint1)
 
-    times 1024-($-$$) db 0 ; 填充0，一直到第1022字节
+    times 512-($-$$) db 0 ; 填充0，一直到第1022字节
