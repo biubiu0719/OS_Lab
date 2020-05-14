@@ -1,0 +1,33 @@
+# README
+
+## 1.`booter.asm`
+
+引导程序
+
+## 2.`kernel`文件夹
+
+由kennel.asm,kernel_a.asm,kernel_c.c和stdio.h组成
+
+共同组成内核代码
+
+## 3.`usrprog`文件夹
+
+由topleft.asm,topright.asm,bottomleft.asm,bottomright.asm和list.asm组成
+
+各自是用户程序代码
+
+## 4.`temp`文件夹
+
+存储汇编后的二进制文件
+
+## 5.`combine.sh`
+
+整合代码，需要在linux下运行
+
+## 6.`myosv3.img`
+
+软盘镜像文件，可在`VM VirtualBox`运行
+
+## 7.`bochsrc`
+
+bochs调试的配置文件
